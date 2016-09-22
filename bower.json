@@ -1,0 +1,27 @@
+{
+  "name": "me.js",
+  "description": "Meco.",
+  "main": "dist/me.js",
+  "authors": [
+    "JustClear"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "me.js",
+    "mvvm",
+    "library"
+  ],
+  "homepage": "https://github.com/JustClear/me",
+  "ignore": [
+    "**/.*",
+    ".*",
+    "*.js",
+    "*.json",
+    "*.md",
+    "*.yml",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
