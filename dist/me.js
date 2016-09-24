@@ -70,13 +70,19 @@
         var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
 
-        observeData(options.data);
-
-        return {
-            data: options.data,
-            observe: observe
-        };
+        return new Me.fn.init(options);
     }
+
+    Me.fn = Me.prototype = {
+        constructor: Me,
+        init: function init(options) {
+            observeData(options.data);
+            return {
+                data: options.data,
+                observe: observe
+            };
+        }
+    };
 
     return Me;
 
