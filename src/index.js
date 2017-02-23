@@ -1,3 +1,3 @@
-import Me from './core/core';
-
-export default Me;
+export default function Me(options) {
+    if (!(this instanceof Me)) return new Me(options);
+}
