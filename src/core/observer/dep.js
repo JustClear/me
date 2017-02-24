@@ -3,7 +3,7 @@ let uid = 0;
 export default class Dep {
     constructor() {
         this.id = uid++;
-        this.subs = [];
+        this.subs = {};
     }
 
     addSub(sub) {
@@ -11,19 +11,10 @@ export default class Dep {
         if (!this.subs[sub.uid]) this.subs[sub.uid] = sub;
     }
 
-    depend() {
-        Dep.target.addDep(this);
-    }
-
-    removeSub(sub) {
-        let index = this.subs.indexOf(sub);
-        if (index != -1) this.subs.splice(index, 1);
-    }
-
     notify() {
-        this.subs.map((sub) => {
-            sub.update();
-        });
+        for (let uid in this.subs) {
+            this.subs[uid].update();
+        }
     }
 }
 
