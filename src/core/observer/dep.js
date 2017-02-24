@@ -7,7 +7,8 @@ export default class Dep {
     }
 
     addSub(sub) {
-        this.subs.push(sub);
+        // avoid repeated additions
+        if (!this.subs[sub.uid]) this.subs[sub.uid] = sub;
     }
 
     depend() {

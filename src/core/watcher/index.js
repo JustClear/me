@@ -1,10 +1,13 @@
 import Dep from '../observer/dep';
 
+let uid = 0;
+
 export default class Watcher {
     constructor(me, expression, callback) {
         this.me = me;
         this.expression = expression;
         this.callback = callback;
+        this.uid = uid++;
         this.depIds = {};
         this.value = this.getValue();
     }

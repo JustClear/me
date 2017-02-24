@@ -57,7 +57,8 @@
       createClass(Dep, [{
           key: "addSub",
           value: function addSub(sub) {
-              this.subs.push(sub);
+              // avoid repeated additions
+              if (!this.subs[sub.uid]) this.subs[sub.uid] = sub;
           }
       }, {
           key: "depend",
@@ -229,6 +230,8 @@
       }
   };
 
+  var uid$2 = 0;
+
   var Watcher = function () {
       function Watcher(me, expression, callback) {
           classCallCheck(this, Watcher);
@@ -236,6 +239,7 @@
           this.me = me;
           this.expression = expression;
           this.callback = callback;
+          this.uid = uid$2++;
           this.depIds = {};
           this.value = this.getValue();
       }
