@@ -1,6 +1,6 @@
 {
   "name": "me.js",
-  "description": "Meco.",
+  "description": "Simplified MVVM framework me.js.",
   "main": "dist/me.js",
   "authors": [
     "JustClear"
