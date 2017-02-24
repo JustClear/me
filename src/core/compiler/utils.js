@@ -29,14 +29,3 @@ export function isTextNode(node) {
 export function isElementNode(node) {
     return node.nodeType === 1;
 }
-
-export function getData(me, expression) {
-    let expressions = expression.split('.'),
-        data = me.$data;
-
-    expressions.map(exp => {
-        data = data[exp];
-    });
-
-    return data;
-}

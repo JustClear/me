@@ -215,17 +215,6 @@
       return node.nodeType === 1;
   }
 
-  function getData(me, expression) {
-      var expressions = expression.split('.'),
-          data = me.$data;
-
-      expressions.map(function (exp) {
-          data = data[exp];
-      });
-
-      return data;
-  }
-
   // updaters: text, html, model.
 
   var updater = {
@@ -382,17 +371,57 @@
               node.addEventListener(eventType, fn.bind(scope), false);
           }
       },
+      model: function model(node, me, expression) {
+          var _this3 = this;
+
+          this.bind(node, me, expression, 'model');
+
+          var value = this.getData(me, expression),
+              newValue = '';
+
+          node.addEventListener('input', function (event) {
+              newValue = event.target.value;
+              if (value == newValue) return;
+              _this3.setData(me, expression, newValue);
+              value = newValue;
+          });
+      },
       text: function text(node, me, expression) {
           this.bind(node, me, expression, 'text');
       },
       bind: function bind(node, me, expression, directive) {
           var updaterFn = updater[directive];
 
-          updaterFn && updaterFn(node, getData(me, expression));
+          updaterFn && updaterFn(node, this.getData(me, expression));
 
           new Watcher(me, expression, function (value, oldValue) {
               updaterFn && updaterFn(node, value, oldValue);
           });
+      },
+      getData: function getData(me, expression) {
+          var expressions = expression.split('.'),
+              data = me.$data;
+
+          expressions.map(function (exp) {
+              data = data[exp];
+          });
+
+          return data;
+      },
+      setData: function setData(me, expression, newValue) {
+          var expressions = expression.split('.'),
+              data = me.$data,
+              len = expressions.length;
+
+          expressions.map(function (exp, i) {
+              if (i < len - 1) {
+                  data = data[exp];
+              } else {
+                  data[exp] = newValue;
+              }
+          });
+
+          return data;
       }
   };
 

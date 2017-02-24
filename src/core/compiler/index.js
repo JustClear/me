@@ -4,7 +4,6 @@ import {
     isEventDirective,
     isTextNode,
     isElementNode,
-    getData,
 } from './utils';
 import updater from './updater';
 import Watcher from '../watcher/index';
@@ -84,16 +83,54 @@ let handler = {
             node.addEventListener(eventType, fn.bind(scope), false);
         }
     },
+    model(node, me, expression) {
+        this.bind(node, me, expression, 'model');
+
+        let value = this.getData(me, expression),
+            newValue = ``;
+
+        node.addEventListener('input', (event) => {
+            newValue = event.target.value;
+            if (value == newValue) return;
+            this.setData(me, expression, newValue);
+            value = newValue;
+        });
+    },
     text(node, me, expression) {
         this.bind(node, me, expression, 'text');
     },
     bind(node, me, expression, directive) {
         let updaterFn = updater[directive];
 
-        updaterFn && updaterFn(node, getData(me, expression));
+        updaterFn && updaterFn(node, this.getData(me, expression));
 
         new Watcher(me, expression, function (value, oldValue) {
             updaterFn && updaterFn(node, value, oldValue);
         });
+    },
+    getData(me, expression) {
+        let expressions = expression.split('.'),
+            data = me.$data;
+
+        expressions.map(exp => {
+            data = data[exp];
+        });
+
+        return data;
+    },
+    setData(me, expression, newValue) {
+        let expressions = expression.split('.'),
+            data = me.$data,
+            len = expressions.length;
+
+        expressions.map((exp, i) => {
+            if (i < len - 1) {
+                data = data[exp];
+            } else {
+                data[exp] = newValue;
+            }
+        });
+
+        return data;
     },
 };
