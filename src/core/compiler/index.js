@@ -2,6 +2,7 @@ import {
     parseTextExpression,
     isDirective,
     isEventDirective,
+    isIfDirective,
     isTextNode,
     isElementNode,
     isShortening,
@@ -54,6 +55,8 @@ export default class Compiler {
 
                 if (isEventDirective(attrName)) {
                     handler['event'](node, this.me, expression, directive);
+                } else if (isIfDirective(directive)) {
+                    handler['ifDir'](node, this.me, expression, directive);
                 } else {
                     handler[directive] && handler[directive](node, this.me, expression);
                 }
@@ -76,6 +79,9 @@ export default class Compiler {
 }
 
 let handler = {
+    ifDir(node, scope, expression) {
+        if (!this.getData(scope, expression)) node.remove();
+    },
     event(node, scope, expression, directive) {
         let eventType = directive.split('.')[0],
             // eventModifier = directive.split('.').length === 1 ? null : directive.split('.')[1], // TOTO

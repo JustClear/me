@@ -18,12 +18,16 @@ export function isDirective(attr) {
     return attr.indexOf('m-') === 0 || attr.indexOf(':') === 0 || attr.indexOf('@') === 0;
 }
 
-export function isShortening(attr) {
-    return attr.indexOf(':') === 0 || attr.indexOf('@') === 0;
-}
-
 export function isEventDirective(attr) {
     return attr.indexOf('m-on') === 0 || attr.indexOf('@') === 0;
+}
+
+export function isIfDirective(attr) {
+    return attr === 'if';
+}
+
+export function isShortening(attr) {
+    return attr.indexOf(':') === 0 || attr.indexOf('@') === 0;
 }
 
 export function isTextNode(node) {
