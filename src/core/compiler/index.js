@@ -4,6 +4,7 @@ import {
     isEventDirective,
     isTextNode,
     isElementNode,
+    isShortening,
 } from './utils';
 import updater from './updater';
 import Watcher from '../watcher/index';
@@ -49,7 +50,8 @@ export default class Compiler {
             attrName = attr.name;
             if (isDirective(attrName)) {
                 expression = attr.value;
-                directive = attrName.substring(2);
+
+                directive = isShortening(attrName) ? attrName.substring(1) : attrName.substring(2);
 
                 if (isEventDirective(directive)) {
                     handler['event'](node, this.me, expression, directive);
