@@ -10,4 +10,7 @@ export default {
     model(node, value) {
         node.value = typeof value == 'undefined' ? '' : value;
     },
+    ifUpdater(node, value) {
+        if (!value) node.remove();
+    },
 };

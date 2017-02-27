@@ -80,7 +80,8 @@ export default class Compiler {
 
 let handler = {
     ifDir(node, scope, expression) {
-        if (!this.getData(scope, expression)) node.remove();
+        // if (!this.getData(scope, expression)) node.remove();
+        this.bind(node, scope, expression, 'ifUpdater');
     },
     event(node, scope, expression, directive) {
         let eventType = directive.split('.')[0],
