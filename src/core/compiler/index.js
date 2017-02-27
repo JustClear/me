@@ -21,7 +21,7 @@ export default class Compiler {
     }
 
     compileNodes(node) {
-        let childNodes = [].slice.call(node.childNodes);
+        let childNodes = [...node.childNodes];
 
         childNodes.map(node => {
             if (isTextNode(node)) this.compileTextNodes(node);
@@ -40,7 +40,7 @@ export default class Compiler {
     }
 
     compileElementNodes(node) {
-        let attrs = [].slice.call(node.attributes),
+        let attrs = [...node.attributes],
             attrName = ``,
             expression = ``,
             directive = ``;
