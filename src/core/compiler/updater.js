@@ -1,6 +1,12 @@
 // updaters: text, html, model.
 
 export default {
+    ifUpdater(node, value) {
+        if (!value) node.remove();
+    },
+    show(node, value) {
+        node.style.display = value ? 'block' : 'none';
+    },
     text(node, value) {
         node.textContent = typeof value == 'undefined' ? '' : value;
     },
@@ -9,8 +15,5 @@ export default {
     },
     model(node, value) {
         node.value = typeof value == 'undefined' ? '' : value;
-    },
-    ifUpdater(node, value) {
-        if (!value) node.remove();
     },
 };
