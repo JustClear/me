@@ -11,7 +11,8 @@ export function parseTextExpression(text) {
             tokens.push('`' + piece + '`');
         }
     });
-    return tokens.join('+');
+
+    return tokens.join('+').trim();
 }
 
 export function isDirective(attr) {

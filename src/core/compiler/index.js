@@ -38,7 +38,7 @@ export default class Compiler {
         if (!text) return;
         const expression = parseTextExpression(text);
 
-        if (expression.match(regText)) handler['text'](node, this.me, expression);
+        if (text.match(regText)) handler['text'](node, this.me, expression);
     }
 
     compileElementNodes(node) {
