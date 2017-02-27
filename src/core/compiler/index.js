@@ -50,10 +50,9 @@ export default class Compiler {
             attrName = attr.name;
             if (isDirective(attrName)) {
                 expression = attr.value;
-
                 directive = isShortening(attrName) ? attrName.substring(1) : attrName.substring(2);
 
-                if (isEventDirective(directive)) {
+                if (isEventDirective(attrName)) {
                     handler['event'](node, this.me, expression, directive);
                 } else {
                     handler[directive] && handler[directive](node, this.me, expression);
@@ -78,7 +77,8 @@ export default class Compiler {
 
 let handler = {
     event(node, scope, expression, directive) {
-        let eventType = directive.split(':')[1],
+        let eventType = directive.split('.')[0],
+            // eventModifier = directive.split('.').length === 1 ? null : directive.split('.')[1], // TOTO
             fn = scope.$options.methods && scope.$options.methods[expression];
 
         if (eventType && fn) {
