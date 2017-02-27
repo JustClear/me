@@ -49,7 +49,7 @@ export default class Compiler {
         attrs.map(attr => {
             attrName = attr.name;
             if (isDirective(attrName)) {
-                expression = attr.value;
+                expression = attr.value.trim();
                 directive = isShortening(attrName) ? attrName.substring(1) : attrName.substring(2);
 
                 if (isEventDirective(attrName)) {
