@@ -1,8 +1,8 @@
 // updaters: text, html, model.
 
 export default {
-    ifUpdater(node, value) {
-        if (!value) node.remove();
+    ifUpdater(node, value, placeholderNode) {
+        value ? placeholderNode.parentNode.insertBefore(node, placeholderNode) : placeholderNode.parentNode.removeChild(node);
     },
     show(node, value) {
         node.style.display = value ? 'block' : 'none';

@@ -80,7 +80,13 @@ export default class Compiler {
 
 let handler = {
     ifDir(node, scope, expression) {
-        this.bind(node, scope, expression, 'ifUpdater');
+        let placeholderNode = document.createTextNode(''),
+            currentNode;
+
+        node.parentNode.insertBefore(placeholderNode, node);
+        currentNode = node.parentNode.removeChild(node);
+
+        this.bind(currentNode, scope, expression, 'ifUpdater', placeholderNode);
     },
     show(node, scope, expression) {
         this.bind(node, scope, expression, 'show');
@@ -110,13 +116,12 @@ let handler = {
     text(node, me, expression) {
         this.bind(node, me, expression, 'text');
     },
-    bind(node, me, expression, directive) {
+    bind(node, me, expression, directive, payload) {
         let updaterFn = updater[directive];
 
-        updaterFn && updaterFn(node, this.getData(me, expression));
-
-        new Watcher(me, expression, function (value, oldValue) {
-            updaterFn && updaterFn(node, value, oldValue);
+        updaterFn && updaterFn(node, this.getData(me, expression), payload);
+        new Watcher(me, expression, function (value) {
+            updaterFn && updaterFn(node, value, payload);
         });
     },
     getData(me, expression) {
