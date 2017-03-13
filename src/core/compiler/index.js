@@ -83,7 +83,7 @@ export default class Compiler {
     bindAttribute(node, attribute) {
         const segments = parse.text(attribute.value);
         if (!segments.length) return;
-        this.bindDirective(node, 'attribute', attribute.value, {
+        this.bindDirective(node, 'attribute', segments[0].value, {
             attrName: attribute.name,
         });
     }
