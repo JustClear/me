@@ -84,7 +84,10 @@ export default class Compiler {
         });
     }
 
-    bindDirective() {}
+    bindDirective(node, name, value) {
+        const expression = value;
+        this.me._directives.push(new Directive(name, node, this.me, expression));
+    }
 
     toFragment(node) {
         let fragment = document.createDocumentFragment(),

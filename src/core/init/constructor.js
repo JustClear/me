@@ -6,4 +6,5 @@ export default function initConstructor(me, options) {
     me.$data = {};
     me.$el = typeof options.el == 'string' ? document.querySelector(options.el) : options.el || document.body;
     me.me = me;
+    me._directives = [];
 }

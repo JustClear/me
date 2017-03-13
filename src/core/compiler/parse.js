@@ -29,5 +29,16 @@ export default {
 
         return segments;
     },
-    directive() {},
+    directive(directive) {
+        let directives = [],
+            origin = directive,
+            expression = directive;
+
+        directives.push({
+            origin,
+            expression,
+        });
+
+        return directives;
+    },
 };
