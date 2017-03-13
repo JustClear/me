@@ -15,8 +15,8 @@ import Watcher from '../watcher/index';
 export default class Compiler {
     constructor(me) {
         this.me = me;
-        this.$template = this.me.options.template || '';
-        this.$el = this.me.options.el;
+        this.$template = this.me.$options.template ? this.me.$options.template : '';
+        this.$el = this.me.$options.el;
         this.compile();
     }
 
@@ -43,7 +43,7 @@ export default class Compiler {
 
     compileTextNodes(node) {
         const segments = parse.text(node.textContent);
-        if (!segments) return;
+        if (!segments.length) return;
         segments.map(segment => {
             // if directive text node.
             if (segment.isDirective) {
