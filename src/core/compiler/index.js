@@ -49,9 +49,14 @@ export default class Compiler {
             if (segment.isDirective) {
                 const el = document.createTextNode('');
                 node.parentNode.insertBefore(el, node);
-                this.bindDirective(node, 'text', segment.value);
+                this.bindDirective(el, 'text', segment.value);
+            } else {
+                // common text node
+                node.parentNode.insertBefore(document.createTextNode(segment.value), node);
             }
         });
+
+        node.parentNode.removeChild(node);
     }
 
     compileElementNodes(node) {
