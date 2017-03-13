@@ -1,26 +1,34 @@
 import {
-    parseTextExpression,
     isDirective,
     isEventDirective,
     isIfDirective,
     isTextNode,
     isElementNode,
     isShortening,
-    domify,
+    toDOM,
 } from './utils';
 import updater from './updater';
+import parse from './parse';
+import Directive from '../directive';
 import Watcher from '../watcher/index';
 
 export default class Compiler {
     constructor(me) {
         this.me = me;
-        this.$el = domify(this.me.options.el);
+        this.$template = this.me.options.template || '';
+        this.$el = this.me.options.el;
+        this.compile();
+    }
 
-        if (this.$el) {
-            this.$fragment = this.nodeToFragment(this.$el);
-            this.compileNodes(this.$fragment);
-            this.$el.appendChild(this.$fragment);
-        }
+    compile() {
+        this.$el = toDOM(this.$el, this.$template);
+        this.$fragment = this.toFragment(this.$el);
+        this.compileNodes(this.$fragment);
+        this.mount();
+    }
+
+    mount() {
+        this.$el.appendChild(this.$fragment);
     }
 
     compileNodes(node) {
@@ -34,12 +42,16 @@ export default class Compiler {
     }
 
     compileTextNodes(node) {
-        const text = node.textContent.trim();
-        const regText = /\{\{(.+?)\}\}/g;
-        if (!text) return;
-        const expression = parseTextExpression(text);
-
-        if (text.match(regText)) handler['text'](node, this.me, expression);
+        const segments = parse.text(node.textContent);
+        if (!segments) return;
+        segments.map(segment => {
+            // if directive text node.
+            if (segment.isDirective) {
+                const el = document.createTextNode('');
+                node.parentNode.insertBefore(el, node);
+                this.bindDirective(node, 'text', segment.value);
+            }
+        });
     }
 
     compileElementNodes(node) {
@@ -67,7 +79,17 @@ export default class Compiler {
         });
     }
 
-    nodeToFragment(node) {
+    bindDirective(node, name, value) {
+        console.log(node, name, value);
+        let expressions = parse.directive(value),
+            directives = this.me._directives;
+
+        expressions.map(expression => {
+            directives.push(new Directive(name, node, this.me, expression));
+        });
+    }
+
+    toFragment(node) {
         let fragment = document.createDocumentFragment(),
             child;
 

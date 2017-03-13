@@ -21,6 +21,10 @@ export function domify(DOMString) {
     return htmlDoc.body.children;
 }
 
+export function toDOM(el, template) {
+    return template ? domify(template) : el;
+}
+
 export function isDirective(attr) {
     return attr.indexOf('m-') === 0 || attr.indexOf(':') === 0 || attr.indexOf('@') === 0;
 }
