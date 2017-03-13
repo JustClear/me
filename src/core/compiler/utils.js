@@ -15,6 +15,12 @@ export function parseTextExpression(text) {
     return tokens.join('+').trim();
 }
 
+export function domify(DOMString) {
+    let htmlDoc = document.implementation.createHTMLDocument();
+    htmlDoc.body.innerHTML = DOMString;
+    return htmlDoc.body.children;
+}
+
 export function isDirective(attr) {
     return attr.indexOf('m-') === 0 || attr.indexOf(':') === 0 || attr.indexOf('@') === 0;
 }

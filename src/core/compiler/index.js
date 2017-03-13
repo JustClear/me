@@ -6,14 +6,15 @@ import {
     isTextNode,
     isElementNode,
     isShortening,
+    domify,
 } from './utils';
 import updater from './updater';
 import Watcher from '../watcher/index';
 
 export default class Compiler {
-    constructor(me, el) {
-        this.$el = typeof el == 'string' ? document.querySelector(el) : el || document.body;
+    constructor(me) {
         this.me = me;
+        this.$el = domify(this.me.options.el);
 
         if (this.$el) {
             this.$fragment = this.nodeToFragment(this.$el);
