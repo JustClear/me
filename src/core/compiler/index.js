@@ -85,13 +85,8 @@ export default class Compiler {
     }
 
     bindDirective(node, name, value) {
-        console.log(node, name, value);
-        let expressions = parse.directive(value),
-            directives = this.me._directives;
-
-        expressions.map(expression => {
-            directives.push(new Directive(name, node, this.me, expression));
-        });
+        const expression = value;
+        this.me._directives.push(new Directive(name, node, this.me, expression));
     }
 
     toFragment(node) {

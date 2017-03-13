@@ -7,7 +7,7 @@ export default class Directive {
         this.el = el;
         this.me = scope;
         this.expression = expression;
-        Object.assign(this, directives);
+        Object.assign(this, directives[this.name]);
         this.bindWatcher();
     }
 
