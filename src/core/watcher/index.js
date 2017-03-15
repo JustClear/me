@@ -3,10 +3,11 @@ import Dep from '../observer/dep';
 let uid = 0;
 
 export default class Watcher {
-    constructor(me, expression, callback) {
+    constructor(me, expression, callback, payload) {
         this.me = me;
         this.expression = expression;
         this.callback = callback;
+        this.payload = payload;
         this.uid = uid++;
         this.depIds = {};
         this.value = this.getValue();
@@ -18,7 +19,7 @@ export default class Watcher {
 
         if (value != oldValue) {
             this.value = value;
-            this.callback.call(this.me, value, oldValue);
+            this.callback.call(this.payload.scope, value, oldValue);
         }
     }
 

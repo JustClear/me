@@ -15,7 +15,9 @@ export default class Directive {
     bindWatcher() {
         if (!this.expression) return;
         this.bind && this.bind();
-        this.watcher = new Watcher(this.me, this.expression, this.update);
+        this.watcher = new Watcher(this.me, this.expression, this.update, {
+            scope: this,
+        });
         this.update && this.update(this.watcher.value);
     }
 }
