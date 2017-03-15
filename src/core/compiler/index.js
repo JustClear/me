@@ -4,6 +4,7 @@ import {
     toDOM,
 } from './utils';
 import parse from './parse';
+import configure from '../configure';
 import Directive from '../directive';
 
 export default class Compiler {
@@ -66,11 +67,11 @@ export default class Compiler {
             attrName = attribute.name;
             expression = attribute.value.trim();
 
-            if (attrName.indexOf(':') === 0) {
-                directiveName = attrName.slice(1);
+            if (attrName.indexOf(configure.identifier.bind) === 0) {
+                directiveName = attrName.slice(configure.identifier.bind.length);
                 this.bindDirective(node, directiveName, expression);
-            } else if (attrName.indexOf('@') === 0) {
-                directiveName = attrName.slice(1);
+            } else if (attrName.indexOf(configure.identifier.event) === 0) {
+                directiveName = attrName.slice(configure.identifier.event.length);
                 this.bindEvent(node, expression, {
                     eventName: directiveName,
                 });
