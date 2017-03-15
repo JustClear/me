@@ -6,6 +6,7 @@ export default class Directive {
         this.name = name;
         this.el = el;
         this.me = scope;
+        this.payload = payload;
         this.attrName = payload && payload.attrName || '';
         this.expression = expression;
         Object.assign(this, directives[this.name]);

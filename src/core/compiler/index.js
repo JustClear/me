@@ -9,6 +9,7 @@ import Directive from '../directive';
 export default class Compiler {
     constructor(me) {
         this.me = me;
+        this.directives = this.me._directives;
         this.$template = this.me.$options.template ? this.me.$options.template : '';
         this.$el = this.me.$options.el;
         this.compile();
@@ -68,6 +69,11 @@ export default class Compiler {
             if (attrName.indexOf(':') === 0) {
                 directiveName = attrName.slice(1);
                 this.bindDirective(node, directiveName, expression);
+            } else if (attrName.indexOf('@') === 0) {
+                directiveName = attrName.slice(1);
+                this.bindEvent(node, expression, {
+                    eventName: directiveName,
+                });
             } else {
                 this.bindAttribute(node, attribute);
             }
@@ -76,8 +82,12 @@ export default class Compiler {
         });
     }
 
+    bindEvent(node, expression, payload) {
+        this.directives.push(new Directive('on', node, this.me, expression, payload));
+    }
+
     bindDirective(node, name, expression, payload) {
-        this.me._directives.push(new Directive(name, node, this.me, expression, payload));
+        this.directives.push(new Directive(name, node, this.me, expression, payload));
     }
 
     bindAttribute(node, attribute) {
