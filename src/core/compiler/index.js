@@ -1,20 +1,16 @@
 import {
-    isDirective,
-    isEventDirective,
-    isIfDirective,
     isTextNode,
     isElementNode,
-    isShortening,
     toDOM,
 } from './utils';
-import updater from './updater';
 import parse from './parse';
+import configure from '../configure';
 import Directive from '../directive';
-import Watcher from '../watcher/index';
 
 export default class Compiler {
     constructor(me) {
         this.me = me;
+        this.directives = this.me._directives;
         this.$template = this.me.$options.template ? this.me.$options.template : '';
         this.$el = this.me.$options.el;
         this.compile();
@@ -60,33 +56,47 @@ export default class Compiler {
     }
 
     compileElementNodes(node) {
-        let attrs = [...node.attributes],
+        if (!node.hasAttributes()) return;
+
+        let attributes = [...node.attributes],
             attrName = ``,
-            expression = ``,
-            directive = ``;
+            directiveName = ``,
+            expression = ``;
 
-        attrs.map(attr => {
-            attrName = attr.name;
-            if (isDirective(attrName)) {
-                expression = attr.value.trim();
-                directive = isShortening(attrName) ? attrName.substring(1) : attrName.substring(2);
+        attributes.map(attribute => {
+            attrName = attribute.name;
+            expression = attribute.value.trim();
 
-                if (isEventDirective(attrName)) {
-                    handler['event'](node, this.me, expression, directive);
-                } else if (isIfDirective(directive)) {
-                    handler['ifDir'](node, this.me, expression, directive);
-                } else {
-                    handler[directive] && handler[directive](node, this.me, expression);
-                }
-
-                node.removeAttribute(attrName);
+            if (attrName.indexOf(configure.identifier.bind) === 0) {
+                directiveName = attrName.slice(configure.identifier.bind.length);
+                this.bindDirective(node, directiveName, expression);
+            } else if (attrName.indexOf(configure.identifier.event) === 0) {
+                directiveName = attrName.slice(configure.identifier.event.length);
+                this.bindEvent(node, expression, {
+                    eventName: directiveName,
+                });
+            } else {
+                this.bindAttribute(node, attribute);
             }
+
+            node.removeAttribute(attrName);
         });
     }
 
-    bindDirective(node, name, value) {
-        const expression = value;
-        this.me._directives.push(new Directive(name, node, this.me, expression));
+    bindEvent(node, expression, payload) {
+        this.directives.push(new Directive('on', node, this.me, expression, payload));
+    }
+
+    bindDirective(node, name, expression, payload) {
+        this.directives.push(new Directive(name, node, this.me, expression, payload));
+    }
+
+    bindAttribute(node, attribute) {
+        const segments = parse.text(attribute.value);
+        if (!segments.length) return;
+        this.bindDirective(node, 'attribute', segments[0].value, {
+            attrName: attribute.name,
+        });
     }
 
     toFragment(node) {
@@ -100,76 +110,3 @@ export default class Compiler {
         return fragment;
     }
 }
-
-let handler = {
-    ifDir(node, scope, expression) {
-        let placeholderNode = document.createTextNode(''),
-            currentNode;
-
-        node.parentNode.insertBefore(placeholderNode, node);
-        currentNode = node.parentNode.removeChild(node);
-
-        this.bind(currentNode, scope, expression, 'ifUpdater', placeholderNode);
-    },
-    show(node, scope, expression) {
-        this.bind(node, scope, expression, 'show');
-    },
-    event(node, scope, expression, directive) {
-        let eventType = directive.split('.')[0],
-            // eventModifier = directive.split('.').length === 1 ? null : directive.split('.')[1], // TOTO
-            fn = scope.$options.methods && scope.$options.methods[expression];
-
-        if (eventType && fn) {
-            node.addEventListener(eventType, fn.bind(scope), false);
-        }
-    },
-    model(node, me, expression) {
-        this.bind(node, me, expression, 'model');
-
-        let value = this.getData(me, expression),
-            newValue = ``;
-
-        node.addEventListener('input', (event) => {
-            newValue = event.target.value;
-            if (value == newValue) return;
-            this.setData(me, expression, newValue);
-            value = newValue;
-        });
-    },
-    text(node, me, expression) {
-        this.bind(node, me, expression, 'text');
-    },
-    bind(node, me, expression, directive, payload) {
-        let updaterFn = updater[directive];
-
-        updaterFn && updaterFn(node, this.getData(me, expression), payload);
-        new Watcher(me, expression, function (value) {
-            updaterFn && updaterFn(node, value, payload);
-        });
-    },
-    getData(me, expression) {
-        let expressions = expression.split('.'),
-            data = me.$data;
-
-        expressions.map(exp => {
-            data = data[exp];
-        });
-
-        return data;
-    },
-    setData(me, expression, newValue) {
-        let expressions = expression.split('.'),
-            data = me.$data,
-            len = expressions.length;
-
-        expressions.map((exp, i) => {
-            if (i < len - 1) {
-                data = data[exp];
-            } else {
-                data[exp] = newValue;
-            }
-        });
-
-        return data;
-    },
-};

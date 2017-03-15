@@ -10,6 +10,8 @@ export default {
             matched,
             nextIndex = 0;
 
+        tagRE.lastIndex = 0;
+
         while (matched = tagRE.exec(text)) {
             index = matched.index;
             if (index > nextIndex) {
@@ -25,7 +27,11 @@ export default {
             nextIndex = index + matched[0].length;
         }
 
-        if (nextIndex < text.length) segments.push(text.slice(nextIndex));
+        if (nextIndex < text.length - 1) {
+            segments.push({
+                value: text.slice(nextIndex),
+            });
+        }
 
         return segments;
     },
