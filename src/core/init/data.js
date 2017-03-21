@@ -3,10 +3,8 @@ import {
 } from '../observer/index';
 import {
     isPlainObject,
-} from '../../utils/object';
-import {
     isReserved,
-} from '../../utils/string';
+} from '../../utils/index';
 
 export default function initData(me) {
     let data = me.$options.data;

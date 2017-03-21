@@ -20,3 +20,36 @@ export function type(object) {
         typeof object
     );
 }
+
+export function isReserved(string) {
+    // 0x24: $, 0x5F: _.
+    const char = `${string}`.charCodeAt(0);
+    return char === 0x24 || char === 0x5F;
+}
+
+export function isObject(object) {
+    return object !== null && typeof object === 'object';
+}
+
+export function isPlainObject(object) {
+    let proto,
+        ctor,
+        class2type = {},
+        toString = class2type.toString, // Object.prototype.toString
+        hasOwn = class2type.hasOwnProperty,
+        fnToString = hasOwn.toString, // Object.toString/Function.toString
+        ObjectFunctionString = fnToString.call(Object); // 'function Object() { [native code] }'
+
+    if (!object || toString.call(object) !== '[object Object]') {
+        return false;
+    }
+
+    // According to the object created by `Object.create(null)` is no `prototype`
+    proto = Object.getPrototypeOf(object);
+    if (!proto) {
+        return true;
+    }
+
+    ctor = hasOwn.call(proto, 'constructor') && proto.constructor;
+    return typeof ctor === 'function' && fnToString.call(ctor) === ObjectFunctionString;
+}
