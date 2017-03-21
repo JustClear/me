@@ -35,16 +35,15 @@ export function isPlainObject(object) {
     let proto,
         ctor,
         class2type = {},
-        toString = class2type.toString, // Object.prototype.toString
+        toString = class2type.toString,
         hasOwn = class2type.hasOwnProperty,
-        fnToString = hasOwn.toString, // Object.toString/Function.toString
-        ObjectFunctionString = fnToString.call(Object); // 'function Object() { [native code] }'
+        fnToString = hasOwn.toString,
+        ObjectFunctionString = fnToString.call(Object);
 
     if (!object || toString.call(object) !== '[object Object]') {
         return false;
     }
 
-    // According to the object created by `Object.create(null)` is no `prototype`
     proto = Object.getPrototypeOf(object);
     if (!proto) {
         return true;
