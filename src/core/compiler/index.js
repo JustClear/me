@@ -1,8 +1,4 @@
-import {
-    isTextNode,
-    isElementNode,
-    toDOM,
-} from './utils';
+import Common from './utils';
 import parse from './parse';
 import configure from '../configure';
 import Directive from '../directive';
@@ -17,7 +13,7 @@ export default class Compiler {
     }
 
     compile() {
-        this.$el = toDOM(this.$el, this.$template);
+        this.$el = Common.toDOM(this.$el, this.$template);
         this.$fragment = this.toFragment(this.$el);
         this.compileNodes(this.$fragment);
         this.mount();
@@ -31,8 +27,8 @@ export default class Compiler {
         let childNodes = [...node.childNodes];
 
         childNodes.map(node => {
-            if (isTextNode(node)) this.compileTextNodes(node);
-            if (isElementNode(node)) this.compileElementNodes(node);
+            if (Common.isTextNode(node)) this.compileTextNodes(node);
+            if (Common.isElementNode(node)) this.compileElementNodes(node);
             if (node.childNodes && node.childNodes.length) this.compileNodes(node);
         });
     }
