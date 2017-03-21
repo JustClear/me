@@ -1,10 +1,8 @@
 import defineReactive from './define-reactive';
-import {
-    type,
-} from './../../utils/index';
+import Common from './../../utils/index';
 
-export function observe(data) {
-    if (type(data) != 'object') return;
+export default function observe(data) {
+    if (Common.type(data) != 'object') return;
 
     for (let key in data) {
         defineReactive(data, key);

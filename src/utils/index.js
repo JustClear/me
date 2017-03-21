@@ -53,3 +53,11 @@ export function isPlainObject(object) {
     ctor = hasOwn.call(proto, 'constructor') && proto.constructor;
     return typeof ctor === 'function' && fnToString.call(ctor) === ObjectFunctionString;
 }
+
+export default {
+    noop,
+    type,
+    isReserved,
+    isObject,
+    isPlainObject,
+};
